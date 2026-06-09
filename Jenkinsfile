@@ -3,21 +3,22 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git 'YOUR_GITHUB_REPOSITORY_URL'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t flask-cicd-app .'
+                bat 'docker build -t flask-cicd-app .'
             }
         }
 
-        stage('Run Container') {
+        stage('Stop Existing Container') {
             steps {
-                sh 'docker run -d -p 5000:5000 flask-cicd-app'
+                bat 'docker stop flask-container || exit 0'
+                bat 'docker rm flask-container || exit 0'
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                bat 'docker run -d -p 5000:5000 --name flask-container flask-cicd-app'
             }
         }
     }
