@@ -5,31 +5,31 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t flask-cicd-app .'
+                bat 'docker build -t sruthip45/flask-cicd-app:latest .'
             }
         }
 
-        stage('Stop Existing Container') {
+        stage('Push Docker Image') {
             steps {
-                bat 'docker stop flask-container || exit 0'
-                bat 'docker rm flask-container || exit 0'
+                bat 'docker push sruthip45/flask-cicd-app:latest'
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Deploy to Kubernetes') {
             steps {
-                bat 'docker run -d -p 5000:5000 --name flask-container flask-cicd-app'
+                bat 'kubectl apply -f deployment.yaml'
+                bat 'kubectl apply -f service.yaml'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline executed successfully!'
+            echo 'Application deployed successfully to Kubernetes!'
         }
 
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline execution failed.'
         }
     }
 }
