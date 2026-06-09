@@ -19,7 +19,6 @@ spec:
     spec:
       containers:
       - name: flask-container
-        image: flask-cicd-app:latest
-        imagePullPolicy: Never
+        image: sruthip45/flask-cicd-app:latest
         ports:
         - containerPort: 5000
